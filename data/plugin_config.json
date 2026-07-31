@@ -1,0 +1,16 @@
+{
+    "profile": {
+        "user_name": "Dennis",
+        "favorite_team": "Real Madrid",
+        "favorite_color": "green",
+        "default_city": "Nairobi"
+    },
+    "security": {
+        "default_trust_level": "HIGH",
+        "session_logging": "ENABLED"
+    },
+    "ai_engine": {
+        "temperature": "0.7",
+        "max_tokens": "1024"
+    }
+}

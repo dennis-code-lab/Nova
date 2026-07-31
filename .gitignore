@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.env
+
+# Sensitive configurations
+data/config.json
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Log files
+data/*.log
+
+# Nova generated backups
+data/.backups/
+
+# Engineering logs
+data/engineering_logs.txt
+
+# Chat history
+data/chat_history.txt

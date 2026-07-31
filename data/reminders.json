@@ -1,0 +1,54 @@
+[
+    {
+        "task": "study Python",
+        "time": "19:00"
+    },
+    {
+        "task": "backup Nova",
+        "time": null
+    },
+    {
+        "task": "test reminder",
+        "time": "23:59"
+    },
+    {
+        "task": "test",
+        "time": null
+    },
+    {
+        "task": "notification test",
+        "time": "18:40"
+    },
+    {
+        "task": "notification test",
+        "time": "21:16"
+    },
+    {
+        "task": "notification test",
+        "time": "18:42"
+    },
+    {
+        "task": "notification test",
+        "time": "18:46"
+    },
+    {
+        "task": "notification test",
+        "time": "19:00"
+    },
+    {
+        "task": "test",
+        "time": "19:13"
+    },
+    {
+        "task": "gui test",
+        "time": "HH:MM"
+    },
+    {
+        "task": "gui test",
+        "time": "19:42"
+    },
+    {
+        "task": "Backup Nova",
+        "time": "20:00"
+    }
+]

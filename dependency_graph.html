@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Nova Architecture Visualizer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #121214;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+        h2 { margin: 0 0 10px 0; color: #38bdf8; font-weight: 500; }
+        #canvas-container {
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            background-color: #0f172a;
+        }
+        .node circle {
+            stroke: #1e293b;
+            stroke-width: 2px;
+        }
+        .node text {
+            font-size: 11px;
+            fill: #94a3b8;
+            pointer-events: none;
+        }
+        .link {
+            stroke: #334155;
+            stroke-opacity: 0.6;
+            stroke-width: 1.5px;
+            fill: none;
+        }
+        .circular {
+            fill: #ef4444 !important;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { stroke: #ef4444; stroke-width: 2px; }
+            50% { stroke: #fca5a5; stroke-width: 5px; }
+            100% { stroke: #ef4444; stroke-width: 2px; }
+        }
+        #sidebar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .stat-item {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .badge {
+            background: #e11d48;
+            color: white;
+            padding: 2px 6px;
+            font-size: 11px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Nova Architecture Dependency Map</h2>
+    <div id="canvas-container"></div>
+    
+    <div id="sidebar">
+        <h3>Workspace Health Panel</h3>
+        <div class="stat-item"><b>Total System Nodes:</b> 62</div>
+        <div class="stat-item"><b>Active Dependencies:</b> 91</div>
+        <div class="stat-item">
+            <b>Circular Import Conflicts:</b> 
+            <span style="color:#10b981">0 Conflicts</span>
+        </div>
+        <hr style="border-color:#1e293b">
+        <h4>Top Coupled Modules (High Impact):</h4>
+        <ul>
+            <li><code>modules/logger.py</code> (31 downstream links)</li><li><code>modules/ai.py</code> (4 downstream links)</li><li><code>modules/reminders.py</code> (4 downstream links)</li>
+        </ul>
+    </div>
+
+    <script>
+        const width = window.innerWidth - 40;
+        const height = window.innerHeight - 80;
+        
+        const data = {
+            nodes: [{"id": 0, "name": "main.py", "circular": false, "deps_count": 17}, {"id": 1, "name": "nova_gui.py", "circular": false, "deps_count": 6}, {"id": 2, "name": "test_notification.py", "circular": false, "deps_count": 0}, {"id": 3, "name": "modules/agent_fabric.py", "circular": false, "deps_count": 1}, {"id": 4, "name": "modules/ai.py", "circular": false, "deps_count": 0}, {"id": 5, "name": "modules/alarms.py", "circular": false, "deps_count": 0}, {"id": 6, "name": "modules/apps.py", "circular": false, "deps_count": 0}, {"id": 7, "name": "modules/bus.py", "circular": false, "deps_count": 1}, {"id": 8, "name": "modules/calculator.py", "circular": false, "deps_count": 0}, {"id": 9, "name": "modules/chat_history.py", "circular": false, "deps_count": 0}, {"id": 10, "name": "modules/code_intel.py", "circular": false, "deps_count": 1}, {"id": 11, "name": "modules/commands.py", "circular": false, "deps_count": 18}, {"id": 12, "name": "modules/composition.py", "circular": false, "deps_count": 1}, {"id": 13, "name": "modules/console.py", "circular": false, "deps_count": 1}, {"id": 14, "name": "modules/context.py", "circular": false, "deps_count": 0}, {"id": 15, "name": "modules/conversation.py", "circular": false, "deps_count": 0}, {"id": 16, "name": "modules/dependency_graph.py", "circular": false, "deps_count": 0}, {"id": 17, "name": "modules/dialogue.py", "circular": false, "deps_count": 2}, {"id": 18, "name": "modules/discovery.py", "circular": false, "deps_count": 1}, {"id": 19, "name": "modules/filesearch.py", "circular": false, "deps_count": 0}, {"id": 20, "name": "modules/greetings.py", "circular": false, "deps_count": 0}, {"id": 21, "name": "modules/guardrails.py", "circular": false, "deps_count": 1}, {"id": 22, "name": "modules/health.py", "circular": false, "deps_count": 2}, {"id": 23, "name": "modules/help_system.py", "circular": false, "deps_count": 1}, {"id": 24, "name": "modules/knowledge.py", "circular": false, "deps_count": 1}, {"id": 25, "name": "modules/learner.py", "circular": false, "deps_count": 1}, {"id": 26, "name": "modules/listener.py", "circular": false, "deps_count": 0}, {"id": 27, "name": "modules/logger.py", "circular": false, "deps_count": 0}, {"id": 28, "name": "modules/memory.py", "circular": false, "deps_count": 0}, {"id": 29, "name": "modules/notes.py", "circular": false, "deps_count": 0}, {"id": 30, "name": "modules/note_search.py", "circular": false, "deps_count": 0}, {"id": 31, "name": "modules/optimizer.py", "circular": false, "deps_count": 1}, {"id": 32, "name": "modules/orchestrator.py", "circular": false, "deps_count": 7}, {"id": 33, "name": "modules/planner.py", "circular": false, "deps_count": 3}, {"id": 34, "name": "modules/plugins.py", "circular": false, "deps_count": 1}, {"id": 35, "name": "modules/proactive.py", "circular": false, "deps_count": 1}, {"id": 36, "name": "modules/profile.py", "circular": false, "deps_count": 0}, {"id": 37, "name": "modules/profiler.py", "circular": false, "deps_count": 1}, {"id": 38, "name": "modules/projects.py", "circular": false, "deps_count": 1}, {"id": 39, "name": "modules/project_intelligence.py", "circular": false, "deps_count": 2}, {"id": 40, "name": "modules/reasoner.py", "circular": false, "deps_count": 2}, {"id": 41, "name": "modules/reflector.py", "circular": false, "deps_count": 1}, {"id": 42, "name": "modules/registry.py", "circular": false, "deps_count": 1}, {"id": 43, "name": "modules/reminders.py", "circular": false, "deps_count": 0}, {"id": 44, "name": "modules/router.py", "circular": false, "deps_count": 2}, {"id": 45, "name": "modules/scheduler.py", "circular": false, "deps_count": 1}, {"id": 46, "name": "modules/security.py", "circular": false, "deps_count": 1}, {"id": 47, "name": "modules/semantic_memory.py", "circular": false, "deps_count": 1}, {"id": 48, "name": "modules/settings.py", "circular": false, "deps_count": 1}, {"id": 49, "name": "modules/stopwatch.py", "circular": false, "deps_count": 0}, {"id": 50, "name": "modules/systemcontrol.py", "circular": false, "deps_count": 0}, {"id": 51, "name": "modules/systeminfo.py", "circular": false, "deps_count": 0}, {"id": 52, "name": "modules/tasks.py", "circular": false, "deps_count": 0}, {"id": 53, "name": "modules/task_queue.py", "circular": false, "deps_count": 1}, {"id": 54, "name": "modules/tester.py", "circular": false, "deps_count": 4}, {"id": 55, "name": "modules/timers.py", "circular": false, "deps_count": 1}, {"id": 56, "name": "modules/voice.py", "circular": false, "deps_count": 0}, {"id": 57, "name": "modules/weather.py", "circular": false, "deps_count": 0}, {"id": 58, "name": "modules/websearch.py", "circular": false, "deps_count": 0}, {"id": 59, "name": "modules/workflows.py", "circular": false, "deps_count": 1}, {"id": 60, "name": "modules/workspace.py", "circular": false, "deps_count": 1}, {"id": 61, "name": "skills/currency.py", "circular": false, "deps_count": 1}],
+            links: [{"source": 0, "target": 4}, {"source": 0, "target": 5}, {"source": 0, "target": 6}, {"source": 0, "target": 8}, {"source": 0, "target": 15}, {"source": 0, "target": 19}, {"source": 0, "target": 26}, {"source": 0, "target": 28}, {"source": 0, "target": 29}, {"source": 0, "target": 36}, {"source": 0, "target": 43}, {"source": 0, "target": 56}, {"source": 0, "target": 34}, {"source": 0, "target": 7}, {"source": 0, "target": 27}, {"source": 0, "target": 45}, {"source": 0, "target": 59}, {"source": 1, "target": 4}, {"source": 1, "target": 9}, {"source": 1, "target": 15}, {"source": 1, "target": 26}, {"source": 1, "target": 43}, {"source": 1, "target": 56}, {"source": 3, "target": 27}, {"source": 7, "target": 27}, {"source": 10, "target": 27}, {"source": 11, "target": 27}, {"source": 11, "target": 34}, {"source": 11, "target": 7}, {"source": 11, "target": 5}, {"source": 11, "target": 6}, {"source": 11, "target": 14}, {"source": 11, "target": 19}, {"source": 11, "target": 23}, {"source": 11, "target": 30}, {"source": 11, "target": 33}, {"source": 11, "target": 43}, {"source": 11, "target": 49}, {"source": 11, "target": 50}, {"source": 11, "target": 51}, {"source": 11, "target": 52}, {"source": 11, "target": 55}, {"source": 11, "target": 57}, {"source": 11, "target": 58}, {"source": 12, "target": 27}, {"source": 13, "target": 37}, {"source": 17, "target": 4}, {"source": 17, "target": 27}, {"source": 18, "target": 4}, {"source": 21, "target": 27}, {"source": 22, "target": 27}, {"source": 22, "target": 28}, {"source": 23, "target": 27}, {"source": 24, "target": 27}, {"source": 25, "target": 27}, {"source": 31, "target": 27}, {"source": 32, "target": 21}, {"source": 32, "target": 40}, {"source": 32, "target": 41}, {"source": 32, "target": 25}, {"source": 32, "target": 13}, {"source": 32, "target": 31}, {"source": 32, "target": 27}, {"source": 33, "target": 5}, {"source": 33, "target": 43}, {"source": 33, "target": 52}, {"source": 34, "target": 27}, {"source": 35, "target": 27}, {"source": 37, "target": 27}, {"source": 38, "target": 27}, {"source": 39, "target": 27}, {"source": 39, "target": 13}, {"source": 40, "target": 36}, {"source": 40, "target": 27}, {"source": 41, "target": 27}, {"source": 42, "target": 27}, {"source": 44, "target": 27}, {"source": 44, "target": 22}, {"source": 45, "target": 27}, {"source": 46, "target": 27}, {"source": 47, "target": 27}, {"source": 48, "target": 27}, {"source": 53, "target": 27}, {"source": 54, "target": 8}, {"source": 54, "target": 36}, {"source": 54, "target": 21}, {"source": 54, "target": 27}, {"source": 55, "target": 56}, {"source": 59, "target": 27}, {"source": 60, "target": 27}, {"source": 61, "target": 7}]
+        };
+
+        const svg = d3.select("#canvas-container")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .call(d3.zoom().on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            }))
+            .append("g");
+
+        const g = svg.append("g");
+
+        // Set up force-directed physics
+        const simulation = d3.forceSimulation(data.nodes)
+            .force("link", d3.forceLink(data.links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-250))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        // Draw Links
+        const link = g.append("g")
+            .selectAll("path")
+            .data(data.links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        // Draw Nodes
+        const node = g.append("g")
+            .selectAll(".node")
+            .data(data.nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", d => 6 + (d.deps_count * 1.5))
+            .attr("fill", d => d.circular ? "#ef4444" : d.deps_count > 3 ? "#38bdf8" : "#818cf8")
+            .attr("class", d => d.circular ? "circular" : "");
+
+        node.append("text")
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(d => d.name);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`);
+            node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+</body>
+</html>

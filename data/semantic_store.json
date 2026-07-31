@@ -1,0 +1,22 @@
+[
+    {
+        "id": "Research Project",
+        "raw_text": "We are analyzing transformational leadership models and measuring their direct influence on personnel satisfaction.",
+        "vector": {
+            "are": 0.25,
+            "concept_evaluation": 0.5,
+            "concept_management": 0.5,
+            "models": 0.25,
+            "and": 0.25,
+            "their": 0.25,
+            "direct": 0.25,
+            "influence": 0.25,
+            "concept_staff": 0.25,
+            "concept_motivation": 0.25
+        },
+        "metadata": {
+            "source": "knowledge_engine",
+            "timestamp": 1784185469.1233401
+        }
+    }
+]

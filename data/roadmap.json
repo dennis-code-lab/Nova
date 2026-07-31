@@ -1,0 +1,49 @@
+{
+  "active_milestone": "v83-alpha",
+  "milestones": {
+    "v83-alpha": {
+      "goal": "Autonomous Engineering Planner Infrastructure",
+      "target_version": "v83",
+      "status": "IN_PROGRESS"
+    }
+  },
+  "tasks": [
+    {
+      "id": "TASK-101",
+      "title": "Build EngineeringPlanner Core Subsystem",
+      "milestone": "v83-alpha",
+      "priority": "P0",
+      "status": "DONE",
+      "effort": "2h",
+      "risk": "LOW",
+      "dependencies": [],
+      "created_at": "2026-07-22 12:17:53"
+    },
+    {
+      "id": "TASK-102",
+      "title": "Integrate Planner Intent Routes into CLI (plan, next task)",
+      "milestone": "v83-alpha",
+      "priority": "P1",
+      "status": "DONE",
+      "effort": "1h",
+      "risk": "LOW",
+      "dependencies": [
+        "TASK-101"
+      ],
+      "created_at": "2026-07-22 12:17:53"
+    },
+    {
+      "id": "TASK-103",
+      "title": "Auto-Git Commit Integration on Patch Executions",
+      "milestone": "v83-alpha",
+      "priority": "P2",
+      "status": "DONE",
+      "effort": "2h",
+      "risk": "MEDIUM",
+      "dependencies": [
+        "TASK-102"
+      ],
+      "created_at": "2026-07-22 12:17:53"
+    }
+  ]
+}
