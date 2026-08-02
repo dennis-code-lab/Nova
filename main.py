@@ -1,5 +1,5 @@
 ﻿"""
-Nova Engine v89
+Nova Engine v93
 Application Entry Point & Interactive Router
 """
 
@@ -7,50 +7,73 @@ import os
 import sys
 
 from modules.decision_engine import DecisionEngine
+from modules.engineering_command_router import EngineeringCommandRouter
 from modules.engineering_controller import EngineeringController
 from modules.engineering_planner import EngineeringPlanner
 from modules.engineering_runtime import EngineeringRuntime
 
 
-def handle_command(user_input: str, runtime: EngineeringRuntime, planner: EngineeringPlanner, controller: EngineeringController, adr: DecisionEngine):
+def handle_command(
+    user_input: str,
+    runtime: EngineeringRuntime,
+    engineering_router: EngineeringCommandRouter,
+    planner: EngineeringPlanner,
+    controller: EngineeringController,
+    adr: DecisionEngine,
+):
     """
-    Executes commands using the shared runtime, planner, controller, and decision engine instances.
+    Executes commands using the shared runtime, router, planner, controller, and decision engine instances.
     """
     cmd_lower = user_input.lower().strip()
 
+    # Call the command router first
+    result = engineering_router.execute(user_input)
+    if result is not None:
+        print(result)
+        return
+
     if cmd_lower in ["help", "commands"]:
         print("\nAvailable Commands:")
-        print("  plan                   - View roadmap dashboard")
-        print("  engineering roadmap    - Generate autonomous engineering roadmap")
-        print("  engineering forecast   - Forecast engineering health improvements")
-        print("  engineering simulate <module> - Simulate the impact of refactoring a module")
-        print("  engineering decision   - Generate Nova's top engineering recommendation")
-        print("  engineering complete <module> - Mark an engineering module as completed")
-        print("  sprints                - View sprint progression")
-        print("  next task              - Get active priority task")
-        print("  estimate <id>          - View task estimation metrics")
-        print("  why <id>               - View intelligent priority reasoning")
-        print("  add task <title>       - Add new task to backlog")
-        print("  complete task <id>     - Mark task completed")
-        print("  decision list          - View architecture decisions")
-        print("  decision show <id>     - Show specific ADR")
-        print("  dependency analyze     - Analyze project dependencies")
-        print("  analyze dependencies   - Alias for dependency analysis")
-        print("  engineering impact     - Generate engineering impact report")
-        print("  engineering overview   - Project-wide engineering dashboard")
-        print("  release notes          - Generate version release notes")
-        print("  engineering explain <m>- Explain engineering score and risk")
+        print("  plan                    - View roadmap dashboard")
+        print("  engineering roadmap     - Generate autonomous engineering roadmap")
+        print("  engineering progress    - Show engineering completion progress")
+        print("  engineering milestones  - Show engineering milestone progress")
+        print("  engineering forecast    - Forecast engineering health improvements")
+        print("  engineering simulate <m>- Simulate the impact of refactoring a module")
+        print("  engineering decision    - Generate Nova's top engineering recommendation")
+        print("  engineering complete <m>- Mark an engineering module as completed")
+        print("  sprints                 - View sprint progression")
+        print("  next task               - Get active priority task")
+        print("  estimate <id>           - View task estimation metrics")
+        print("  why <id>                - View intelligent priority reasoning")
+        print("  add task <title>        - Add new task to backlog")
+        print("  complete task <id>      - Mark task completed")
+        print("  decision list           - View architecture decisions")
+        print("  decision show <id>      - Show specific ADR")
+        print("  dependency analyze      - Analyze project dependencies")
+        print("  analyze dependencies    - Alias for dependency analysis")
+        print("  engineering impact      - Generate engineering impact report")
+        print("  engineering overview    - Project-wide engineering dashboard")
+        print("  engineering dashboard   - Executive Engineering Dashboard")
+        print("  release notes           - Generate version release notes")
+        print("  engineering explain <m> - Explain engineering score and risk")
         print("  engineering advise <m>  - Generate engineering improvement advice")
-        print("  engineering report <m> - View full engineering report for a module")
-        print("  engineering plan <m>   - View refactor plan for a module")
-        print("  engineering predict <m>- View affected dependency modules")
-        print("  engineering risk <m>   - Evaluate risk score and reasons for a module")
+        print("  engineering report <m>  - View full engineering report for a module")
+        print("  engineering plan <m>    - View refactor plan for a module")
+        print("  engineering predict <m> - View affected dependency modules")
+        print("  engineering risk <m>    - Evaluate risk score and reasons for a module")
 
     elif cmd_lower in ["plan", "roadmap"]:
         print(planner.format_plan_dashboard())
 
     elif cmd_lower == "engineering roadmap":
         print(runtime.roadmap())
+
+    elif cmd_lower == "engineering progress":
+        print(runtime.progress())
+
+    elif cmd_lower == "engineering milestones":
+        print(runtime.milestones())
 
     elif cmd_lower == "engineering forecast":
         print(runtime.forecast())
@@ -159,6 +182,9 @@ def handle_command(user_input: str, runtime: EngineeringRuntime, planner: Engine
     elif cmd_lower == "engineering overview":
         print(runtime.overview())
 
+    elif cmd_lower == "engineering dashboard":
+        print(runtime.dashboard())
+
     elif cmd_lower.startswith("engineering explain "):
         module = user_input.split(maxsplit=2)[2]
         print(runtime.explain(module))
@@ -209,9 +235,15 @@ def handle_command(user_input: str, runtime: EngineeringRuntime, planner: Engine
         )
 
 
-def interactive_mode(engineering: EngineeringRuntime, planner: EngineeringPlanner, controller: EngineeringController, adr: DecisionEngine):
+def interactive_mode(
+    engineering: EngineeringRuntime,
+    engineering_router: EngineeringCommandRouter,
+    planner: EngineeringPlanner,
+    controller: EngineeringController,
+    adr: DecisionEngine,
+):
     print("==================================================")
-    print("      NOVA ENGINE v89 - AUTONOMOUS TECH LEAD      ")
+    print("      NOVA ENGINE v93 - AUTONOMOUS TECH LEAD      ")
     print("      Interactive Assistant Shell Active          ")
     print("      Type 'help' for commands, 'exit' to quit.   ")
     print("==================================================\n")
@@ -230,6 +262,7 @@ def interactive_mode(engineering: EngineeringRuntime, planner: EngineeringPlanne
             handle_command(
                 user_input,
                 engineering,
+                engineering_router,
                 planner,
                 controller,
                 adr,
@@ -240,11 +273,19 @@ def interactive_mode(engineering: EngineeringRuntime, planner: EngineeringPlanne
             break
 
 
-def cli_mode(args: list, engineering: EngineeringRuntime, planner: EngineeringPlanner, controller: EngineeringController, adr: DecisionEngine):
+def cli_mode(
+    args: list,
+    engineering: EngineeringRuntime,
+    engineering_router: EngineeringCommandRouter,
+    planner: EngineeringPlanner,
+    controller: EngineeringController,
+    adr: DecisionEngine,
+):
     command = " ".join(args).strip()
     handle_command(
         command,
         engineering,
+        engineering_router,
         planner,
         controller,
         adr,
@@ -254,11 +295,25 @@ def cli_mode(args: list, engineering: EngineeringRuntime, planner: EngineeringPl
 if __name__ == "__main__":
     # Create single runtime instance at entry point
     engineering = EngineeringRuntime()
+    engineering_router = EngineeringCommandRouter(engineering)
     planner = EngineeringPlanner()
     controller = EngineeringController()
     adr = DecisionEngine()
 
     if len(sys.argv) == 1:
-        interactive_mode(engineering, planner, controller, adr)
+        interactive_mode(
+            engineering,
+            engineering_router,
+            planner,
+            controller,
+            adr,
+        )
     else:
-        cli_mode(sys.argv[1:], engineering, planner, controller, adr)
+        cli_mode(
+            sys.argv[1:],
+            engineering,
+            engineering_router,
+            planner,
+            controller,
+            adr,
+        )

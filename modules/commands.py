@@ -2,11 +2,11 @@ from datetime import date, datetime
 import random
 
 # Nova v45 Systems
-from modules.logger import log_info, log_error
+from modules.logger import log_error, log_info
 
 # Nova v46/v47: Dynamic Plugin & Event Bus Architecture
-from modules.plugins import get_plugin_routes
 from modules.bus import publish  # <-- Nova v47 Global Communication Bus Line
+from modules.plugins import get_plugin_routes
 
 # Standard Core Components
 from modules.alarms import add_alarm, delete_alarm, list_alarms
@@ -167,8 +167,17 @@ def handle_command(
             return "Runtime Notice: Complete action aborted due to a database access failure."
 
     # =====================================================
-    # Nova v90 Engineering Runtime Commands
+    # Nova v90/v91 Engineering Runtime Commands
     # =====================================================
+
+    # =====================================================
+    # Nova v91 Engineering Dashboard
+    # =====================================================
+    if lower == "engineering dashboard":
+        try:
+            return engineering.dashboard()
+        except Exception as e:
+            return f"Engineering Error: {e}"
 
     if lower.startswith("engineering report "):
         module = text[len("engineering report "):].strip()

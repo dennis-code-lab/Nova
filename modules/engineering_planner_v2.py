@@ -55,7 +55,21 @@ class AutonomousEngineeringPlanner:
 
         roadmap: List[RoadmapItem] = []
 
+        ENGINEERING_MODULE_PREFIXES = (
+            "modules.engineering",
+            "modules.risk_engine",
+            "modules.change_predictor",
+            "modules.dependency_analyzer",
+            "modules.impact_engine",
+            "modules.refactor_planner",
+            "modules.logger",
+            "modules.orchestrator",
+        )
+
         for module in self.graph.modules():
+
+            if not module.startswith(ENGINEERING_MODULE_PREFIXES):
+                continue
 
             score = self.score_engine.calculate(module)
             advice = self.advisor.advise(module)
