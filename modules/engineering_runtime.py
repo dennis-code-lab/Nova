@@ -1,5 +1,5 @@
 """
-Nova Engine v93
+Nova Engine v94
 Engineering Runtime
 
 Central runtime responsible for initializing and exposing
@@ -16,6 +16,7 @@ from typing import Any, Dict
 
 from modules.change_predictor import ChangePredictor
 from modules.dependency_analyzer import DependencyAnalyzer
+from modules.engineering_achievements import EngineeringAchievementEngine
 from modules.engineering_advisor import EngineeringAdvisor
 from modules.engineering_dashboard import EngineeringDashboard
 from modules.engineering_decision_engine import EngineeringDecisionEngine
@@ -154,6 +155,11 @@ class EngineeringRuntime:
             self.history
         )
 
+        self.achievement_engine = EngineeringAchievementEngine(
+            self.history,
+            self.milestone_engine,
+        )
+
         self.dashboard_engine = EngineeringDashboard(
             self.health_engine,
             self.forecast_engine,
@@ -203,6 +209,9 @@ class EngineeringRuntime:
 
     def milestones(self) -> str:
         return self.milestone_engine.format_report()
+
+    def achievements(self) -> str:
+        return self.achievement_engine.format_report()
 
     def dashboard(self) -> str:
         return self.memory.get_dashboard()

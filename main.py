@@ -1,5 +1,5 @@
 ﻿"""
-Nova Engine v93
+Nova Engine v94
 Application Entry Point & Interactive Router
 """
 
@@ -38,10 +38,11 @@ def handle_command(
         print("  engineering roadmap     - Generate autonomous engineering roadmap")
         print("  engineering progress    - Show engineering completion progress")
         print("  engineering milestones  - Show engineering milestone progress")
+        print("  engineering achievements - View completed engineering milestones")
         print("  engineering forecast    - Forecast engineering health improvements")
-        print("  engineering simulate <m>- Simulate the impact of refactoring a module")
+        print("  engineering simulate <module> - Simulate the impact of refactoring a module")
         print("  engineering decision    - Generate Nova's top engineering recommendation")
-        print("  engineering complete <m>- Mark an engineering module as completed")
+        print("  engineering complete <module> - Mark an engineering module as completed")
         print("  sprints                 - View sprint progression")
         print("  next task               - Get active priority task")
         print("  estimate <id>           - View task estimation metrics")
@@ -56,7 +57,7 @@ def handle_command(
         print("  engineering overview    - Project-wide engineering dashboard")
         print("  engineering dashboard   - Executive Engineering Dashboard")
         print("  release notes           - Generate version release notes")
-        print("  engineering explain <m> - Explain engineering score and risk")
+        print("  engineering explain <m>- Explain engineering score and risk")
         print("  engineering advise <m>  - Generate engineering improvement advice")
         print("  engineering report <m>  - View full engineering report for a module")
         print("  engineering plan <m>    - View refactor plan for a module")
@@ -74,6 +75,9 @@ def handle_command(
 
     elif cmd_lower == "engineering milestones":
         print(runtime.milestones())
+
+    elif cmd_lower == "engineering achievements":
+        print(runtime.achievements())
 
     elif cmd_lower == "engineering forecast":
         print(runtime.forecast())
@@ -243,7 +247,7 @@ def interactive_mode(
     adr: DecisionEngine,
 ):
     print("==================================================")
-    print("      NOVA ENGINE v93 - AUTONOMOUS TECH LEAD      ")
+    print("      NOVA ENGINE v94 - AUTONOMOUS TECH LEAD      ")
     print("      Interactive Assistant Shell Active          ")
     print("      Type 'help' for commands, 'exit' to quit.   ")
     print("==================================================\n")
