@@ -1,5 +1,5 @@
 ﻿"""
-Nova Engine v94
+Nova Engine v96
 Application Entry Point & Interactive Router
 """
 
@@ -39,6 +39,7 @@ def handle_command(
         print("  engineering progress    - Show engineering completion progress")
         print("  engineering milestones  - Show engineering milestone progress")
         print("  engineering achievements - View completed engineering milestones")
+        print("  engineering sprint      - View active engineering sprint")
         print("  engineering forecast    - Forecast engineering health improvements")
         print("  engineering simulate <module> - Simulate the impact of refactoring a module")
         print("  engineering decision    - Generate Nova's top engineering recommendation")
@@ -79,6 +80,9 @@ def handle_command(
     elif cmd_lower == "engineering achievements":
         print(runtime.achievements())
 
+    elif cmd_lower == "engineering sprint":
+        print(runtime.sprint())
+
     elif cmd_lower == "engineering forecast":
         print(runtime.forecast())
 
@@ -100,7 +104,7 @@ def handle_command(
             runtime.complete(parts[2])
             print(f"\nMarked '{parts[2]}' as completed.")
 
-    elif cmd_lower == "sprints":
+    elif cmd_lower in ["sprints"]:
         print(planner.format_sprint_roadmap())
 
     elif cmd_lower in ["next task", "next"]:
@@ -247,7 +251,7 @@ def interactive_mode(
     adr: DecisionEngine,
 ):
     print("==================================================")
-    print("      NOVA ENGINE v94 - AUTONOMOUS TECH LEAD      ")
+    print("      NOVA ENGINE v96 - AUTONOMOUS TECH LEAD      ")
     print("      Interactive Assistant Shell Active          ")
     print("      Type 'help' for commands, 'exit' to quit.   ")
     print("==================================================\n")
