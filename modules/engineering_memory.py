@@ -3,7 +3,7 @@ Nova Engine v84
 Engineering Memory Module
 
 Manages persistent engineering metrics, health history, technical debt tracking,
-and engineering workflow state (completed modules, decisions, milestones).
+and engineering workflow state (completed modules, decisions, milestones, achievements).
 """
 
 from __future__ import annotations
@@ -42,6 +42,7 @@ class EngineeringMemory:
                 "completed_modules": [],
                 "engineering_decisions": [],
                 "milestones": [],
+                "achievements": [],
                 "last_updated": datetime.now().isoformat(),
             }
             self._save_file(initial_schema)
@@ -49,7 +50,7 @@ class EngineeringMemory:
             # Backwards-compatibility check to ensure new schema fields exist on disk
             data = self._read_file()
             updated = False
-            for key in ("completed_modules", "engineering_decisions", "milestones"):
+            for key in ("completed_modules", "engineering_decisions", "milestones", "achievements"):
                 if key not in data:
                     data[key] = []
                     updated = True
@@ -212,3 +213,32 @@ Recommended Next Actions:
         data["completed_modules"] = []
         data["last_updated"] = datetime.now().isoformat()
         self._save_file(data)
+
+    def achievements(self):
+        """Returns the list of unlocked achievements."""
+        data = self._read_file()
+        return data.get("achievements", [])
+
+    def add_achievement(self, achievement):
+        """Adds a new achievement to storage if it has not already been recorded."""
+        data = self._read_file()
+        achievements = data.setdefault("achievements", [])
+
+        existing = {
+            item["name"]
+            for item in achievements
+        }
+
+        if achievement["name"] in existing:
+            return
+
+        achievements.append(achievement)
+        self._save_file(data)
+
+    def has_achievement(self, name):
+        """Checks if an achievement with the given name already exists in memory."""
+        data = self._read_file()
+        return any(
+            item["name"] == name
+            for item in data.get("achievements", [])
+        )

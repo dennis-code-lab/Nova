@@ -158,6 +158,7 @@ class EngineeringRuntime:
         self.achievement_engine = EngineeringAchievementEngine(
             self.history,
             self.milestone_engine,
+            self.memory,
         )
 
         self.dashboard_engine = EngineeringDashboard(

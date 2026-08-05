@@ -2,7 +2,7 @@
 Nova Engine v94
 Engineering Achievement Engine
 
-Tracks completed engineering milestones.
+Tracks and persists completed engineering milestones.
 """
 
 from __future__ import annotations
@@ -13,23 +13,27 @@ from typing import Any, Dict, List
 
 class EngineeringAchievementEngine:
 
-    def __init__(self, history: Any, milestone_engine: Any) -> None:
+    def __init__(
+        self,
+        history: Any,
+        milestone_engine: Any,
+        memory: Any,
+    ) -> None:
         self.history = history
         self.milestone_engine = milestone_engine
+        self.memory = memory
 
     def achievements(self) -> List[Dict[str, str]]:
-        achievements = []
-
         for milestone in self.milestone_engine.milestone_progress():
             if milestone["completed"] == milestone["total"] and milestone["total"] > 0:
-                achievements.append(
-                    {
-                        "name": milestone["name"],
-                        "completed_on": datetime.now().strftime("%Y-%m-%d"),
-                    }
-                )
+                achievement = {
+                    "name": milestone["name"],
+                    "completed_on": datetime.now().strftime("%Y-%m-%d"),
+                }
+                if not self.memory.has_achievement(achievement["name"]):
+                    self.memory.add_achievement(achievement)
 
-        return achievements
+        return self.memory.achievements()
 
     def format_report(self) -> str:
         lines = [
