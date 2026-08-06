@@ -1,5 +1,5 @@
 """
-Nova Engine v96
+Nova Engine v97
 Engineering Runtime
 
 Central runtime responsible for initializing and exposing
@@ -32,6 +32,7 @@ from modules.engineering_orchestrator import EngineeringOrchestrator
 from modules.engineering_overview import EngineeringOverview
 from modules.engineering_planner_v2 import AutonomousEngineeringPlanner
 from modules.engineering_progress import EngineeringProgressEngine
+from modules.engineering_release import EngineeringReleaseManager
 from modules.engineering_score import EngineeringScoreEngine
 from modules.engineering_simulator import EngineeringSimulator
 from modules.engineering_sprints import EngineeringSprintManager
@@ -166,6 +167,13 @@ class EngineeringRuntime:
             self.history
         )
 
+        self.release_manager = EngineeringReleaseManager(
+            self.history,
+            self.milestone_engine,
+            self.achievement_engine,
+            self.health_engine,
+        )
+
         self.dashboard_engine = EngineeringDashboard(
             self.health_engine,
             self.forecast_engine,
@@ -221,6 +229,9 @@ class EngineeringRuntime:
 
     def sprint(self) -> str:
         return self.sprint_manager.format_report()
+
+    def release(self) -> str:
+        return self.release_manager.format_release()
 
     def dashboard(self) -> str:
         return self.memory.get_dashboard()

@@ -1,5 +1,5 @@
 """
-Nova Engine v90
+Nova Engine v98
 Engineering History
 
 Tracks completed engineering improvements using
@@ -32,6 +32,10 @@ class EngineeringHistory:
     def completed_count(self) -> int:
         """Returns the total number of completed modules."""
         return len(self.memory.completed_modules())
+
+    def completed_modules(self) -> list[str]:
+        """Returns all completed modules."""
+        return self.memory.completed_modules()
 
     def remaining(self, modules: list[str]) -> list[str]:
         """Returns a list of module names that have not yet been completed."""

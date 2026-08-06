@@ -1,5 +1,5 @@
 """
-Nova Engine v93
+Nova Engine v98
 Engineering Milestone Engine
 
 Groups engineering modules into milestones and reports progress.
@@ -59,6 +59,16 @@ class EngineeringMilestoneEngine:
             )
 
         return results
+
+    def completed(self) -> List[Dict[str, Any]]:
+        """
+        Returns only milestones that are fully completed.
+        """
+        return [
+            milestone
+            for milestone in self.milestone_progress()
+            if milestone["completed"] == milestone["total"]
+        ]
 
     def format_report(self) -> str:
         lines = [
