@@ -66,20 +66,27 @@ class EngineeringSprintManager:
         if sprint is None:
             return None
 
-        completed = sum(
-            self.history.is_completed(module)
-            for module in sprint["modules"]
-        )
+        completed_modules = []
+        remaining_modules = []
 
+        for module in sprint["modules"]:
+            if self.history.is_completed(module):
+                completed_modules.append(module)
+            else:
+                remaining_modules.append(module)
+
+        completed = len(completed_modules)
         total = len(sprint["modules"])
 
         return {
             "name": sprint["name"],
             "goal": sprint["goal"],
             "completed": completed,
-            "remaining": total - completed,
+            "remaining": len(remaining_modules),
             "total": total,
             "percent": round((completed / total) * 100),
+            "completed_modules": completed_modules,
+            "remaining_modules": remaining_modules,
         }
 
     def format_report(self) -> str:
@@ -96,16 +103,44 @@ class EngineeringSprintManager:
         bar = "█" * (sprint["percent"] // 10)
         bar += "░" * (10 - len(bar))
 
-        return (
-            f"{'=' * 60}\n"
-            f"{sprint['name']}\n"
-            f"{'=' * 60}\n\n"
-            f"Goal\n\n"
-            f"{sprint['goal']}\n\n"
-            f"Progress\n\n"
-            f"{bar} {sprint['percent']}%\n\n"
-            f"Completed\n\n"
-            f"{sprint['completed']} / {sprint['total']}\n\n"
-            f"Remaining\n\n"
-            f"{sprint['remaining']}"
+        completed_text = "\n".join(
+            f"✓ {module}"
+            for module in sprint["completed_modules"]
         )
+        remaining_text = "\n".join(
+            f"• {module}"
+            for module in sprint["remaining_modules"]
+        )
+
+        if not completed_text:
+            completed_text = "None"
+        if not remaining_text:
+            remaining_text = "None"
+
+        estimated = sprint["remaining"]
+
+        return f"""
+============================================================
+{sprint['name']}
+============================================================
+
+Goal
+
+{sprint['goal']}
+
+Progress
+
+{bar} {sprint['percent']}%
+
+Completed
+
+{completed_text}
+
+Remaining
+
+{remaining_text}
+
+Estimated Completion
+
+{estimated} engineering session(s)
+"""
