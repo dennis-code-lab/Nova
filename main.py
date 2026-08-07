@@ -1,5 +1,5 @@
 ﻿"""
-Nova Engine v99
+Nova Engine v100
 Application Entry Point & Interactive Router
 """
 
@@ -39,6 +39,7 @@ def handle_command(
         print("  engineering progress    - Show engineering completion progress")
         print("  engineering milestones  - Show engineering milestone progress")
         print("  engineering analytics   - View engineering analytics")
+        print("  engineering insights    - View engineering recommendations")
         print("  engineering achievements - View completed engineering milestones")
         print("  engineering sprint      - View active engineering sprint")
         print("  engineering release     - Generate engineering release report")
@@ -81,6 +82,9 @@ def handle_command(
 
     elif cmd_lower == "engineering analytics":
         print(runtime.analytics())
+
+    elif cmd_lower == "engineering insights":
+        print(runtime.insights())
 
     elif cmd_lower == "engineering achievements":
         print(runtime.achievements())
@@ -259,7 +263,7 @@ def interactive_mode(
     adr: DecisionEngine,
 ):
     print("==================================================")
-    print("      NOVA ENGINE v99 - AUTONOMOUS TECH LEAD      ")
+    print("      NOVA ENGINE v100 - AUTONOMOUS TECH LEAD     ")
     print("      Interactive Assistant Shell Active          ")
     print("      Type 'help' for commands, 'exit' to quit.   ")
     print("==================================================\n")
@@ -292,7 +296,7 @@ def interactive_mode(
 def cli_mode(
     args: list,
     engineering: EngineeringRuntime,
-    engineering_runtime_router: EngineeringCommandRouter,
+    engineering_router: EngineeringCommandRouter,
     planner: EngineeringPlanner,
     controller: EngineeringController,
     adr: DecisionEngine,
@@ -301,7 +305,7 @@ def cli_mode(
     handle_command(
         command,
         engineering,
-        engineering_runtime_router,
+        engineering_router,
         planner,
         controller,
         adr,
