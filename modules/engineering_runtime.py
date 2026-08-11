@@ -108,6 +108,7 @@ class EngineeringRuntime:
             engineering_graph,
             self.score_engine,
             self.advisor,
+            self.history,
         )
 
         self.progress_engine = EngineeringProgressEngine(

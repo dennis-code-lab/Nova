@@ -1,11 +1,11 @@
 """
-Nova Engine v92
+Nova Engine v100
 Engineering Progress Engine
 
-Calculates engineering progress across the autonomous roadmap.
+Calculates engineering progress across the autonomous engineering universe.
 
-Author:
-    Nova Engine
+Completed modules remain part of the overall engineering universe,
+while the autonomous roadmap contains only remaining work.
 """
 
 from __future__ import annotations
@@ -35,13 +35,47 @@ class EngineeringProgressEngine:
         self.history = history
 
     def calculate(self) -> EngineeringProgress:
-        roadmap = self.planner.generate()
-        total = len(roadmap)
+        """
+        Calculate engineering progress.
 
-        completed = sum(
-            1
+        The active roadmap normally contains remaining work only.
+        When the real EngineeringHistory exposes completed_modules(),
+        completed modules are merged back into the engineering universe.
+
+        Lightweight test doubles that only implement is_completed()
+        remain supported.
+        """
+
+        roadmap = self.planner.generate()
+
+        roadmap_modules = {
+            item.module
             for item in roadmap
-            if self.history.is_completed(item.module)
+        }
+
+        # Determine completed modules.
+        #
+        # Real EngineeringHistory provides completed_modules().
+        # Lightweight test mocks may only provide is_completed().
+        if hasattr(self.history, "completed_modules"):
+            completed_modules = set(
+                self.history.completed_modules()
+            )
+        else:
+            completed_modules = {
+                item.module
+                for item in roadmap
+                if self.history.is_completed(item.module)
+            }
+
+        # Complete engineering universe:
+        # remaining roadmap + completed historical modules.
+        all_modules = roadmap_modules | completed_modules
+
+        total = len(all_modules)
+
+        completed = len(
+            completed_modules & all_modules
         )
 
         remaining = total - completed

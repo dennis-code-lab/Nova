@@ -1,5 +1,5 @@
 """
-Nova Engine v87
+Nova Engine v100
 Autonomous Engineering Planner
 
 Builds a prioritized engineering roadmap from live
@@ -16,6 +16,7 @@ from typing import List
 
 from modules.engineering_advisor import EngineeringAdvisor
 from modules.engineering_graph import EngineeringGraph
+from modules.engineering_history import EngineeringHistory
 from modules.engineering_score import EngineeringScoreEngine
 
 
@@ -43,17 +44,20 @@ class AutonomousEngineeringPlanner:
         graph: EngineeringGraph,
         score_engine: EngineeringScoreEngine,
         advisor: EngineeringAdvisor,
+        history: EngineeringHistory,
     ) -> None:
 
         self.graph = graph
         self.score_engine = score_engine
         self.advisor = advisor
+        self.history = history
 
     # ------------------------------------------------------
 
     def generate(self) -> List[RoadmapItem]:
 
         roadmap: List[RoadmapItem] = []
+        completed_modules = set(self.history.completed_modules())
 
         ENGINEERING_MODULE_PREFIXES = (
             "modules.engineering",
@@ -66,9 +70,19 @@ class AutonomousEngineeringPlanner:
             "modules.orchestrator",
         )
 
+        FOUNDATION_MODULES = {
+            "modules.engineering_runtime",
+        }
+
         for module in self.graph.modules():
 
+            if module in completed_modules:
+                continue
+
             if not module.startswith(ENGINEERING_MODULE_PREFIXES):
+                continue
+
+            if module in FOUNDATION_MODULES:
                 continue
 
             score = self.score_engine.calculate(module)
@@ -82,6 +96,24 @@ class AutonomousEngineeringPlanner:
                     estimated_effort=advice.estimated_effort,
                     recommendation=advice.recommendation,
                 )
+            )
+
+        # The central runtime is a foundational engineering module.
+        # It is not part of the dependency graph because it initializes
+        # the engineering subsystem itself, so include it explicitly.
+        if (
+            "modules.engineering_runtime" not in completed_modules
+            and "modules.engineering_runtime" not in {item.module for item in roadmap}
+        ):
+            roadmap.insert(
+                0,
+                RoadmapItem(
+                    module="modules.engineering_runtime",
+                    priority="HIGH",
+                    engineering_score=0.0,
+                    estimated_effort="2-3 engineering hours",
+                    recommendation="Split this module into smaller feature-specific modules.",
+                ),
             )
 
         priority_order = {

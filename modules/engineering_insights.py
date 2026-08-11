@@ -24,16 +24,17 @@ class EngineeringInsights:
         self.planner = planner
 
     def generate(self) -> Dict[str, Any]:
-        """Generates engineering insights including current project phase, next module, and estimated remaining sessions."""
+        """Generates dynamic engineering insights."""
+
         analytics = self.analytics_engine.analytics()
-
         milestones = self.milestone_engine.milestone_progress()
-
         roadmap = self.planner.generate()
 
-        if analytics["completion"] < 25:
+        completion = analytics["completion"]
+
+        if completion < 25:
             phase = "Foundation Phase"
-        elif analytics["completion"] < 60:
+        elif completion < 60:
             phase = "Engineering Phase"
         else:
             phase = "Optimization Phase"
@@ -44,19 +45,50 @@ class EngineeringInsights:
             else "None"
         )
 
-        sessions_remaining = analytics["remaining"]
+        # Determine the current milestone
+        current_milestone = "Complete"
+
+        for milestone in milestones:
+            if milestone["completed"] < milestone["total"]:
+                current_milestone = milestone["name"]
+                break
+
+        # Generate a recommendation based on actual project state
+        if not roadmap:
+            recommendation = (
+                "All roadmap modules are complete. "
+                "Review the architecture and prepare the next engineering cycle."
+            )
+        elif completion < 25:
+            recommendation = (
+                f"Focus on the Foundation milestone by completing "
+                f"{next_module} before expanding the system."
+            )
+        elif completion < 60:
+            recommendation = (
+                f"Continue Engineering Intelligence work, prioritizing "
+                f"{next_module}."
+            )
+        else:
+            recommendation = (
+                f"Prioritize optimization and automation, starting with "
+                f"{next_module}."
+            )
 
         return {
             "phase": phase,
-            "completion": analytics["completion"],
+            "current_milestone": current_milestone,
+            "completion": completion,
             "velocity": analytics["velocity"],
             "remaining": analytics["remaining"],
             "next_module": next_module,
-            "sessions": sessions_remaining,
+            "sessions": analytics["remaining"],
+            "recommendation": recommendation,
         }
 
     def format_report(self) -> str:
-        """Formats the generated insights into a CLI summary report."""
+        """Formats dynamic engineering insights into a CLI report."""
+
         report = self.generate()
 
         return f"""
@@ -67,6 +99,10 @@ ENGINEERING INSIGHTS
 Current Phase
 
 {report['phase']}
+
+Current Milestone
+
+{report['current_milestone']}
 
 Completion
 
@@ -90,6 +126,7 @@ Estimated Sessions Remaining
 
 Recommendation
 
-Complete the current highest-priority module before
-moving to lower-priority engineering work.
+{report['recommendation']}
+
+============================================================
 """
