@@ -131,6 +131,7 @@ class EngineeringRuntime:
             self.score_engine,
             self.risk_engine,
             self.forecast_engine,
+            self.predictor,
         )
 
         self.decision_engine = EngineeringDecisionEngine(
