@@ -74,6 +74,7 @@ class EngineeringRuntime:
         engineering_graph = EngineeringGraphBuilder(
             dependency_graph
         ).build(analyses)
+        self.graph = engineering_graph
 
         # ---------------------------------------------
         # Core Services

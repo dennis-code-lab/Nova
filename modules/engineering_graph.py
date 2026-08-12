@@ -74,13 +74,25 @@ class EngineeringGraphBuilder:
             if analysis is None:
                 continue
 
+            dependencies = list(
+                self.dependency_graph.dependencies_of(module)
+            )
+
+            dependency_count = len(dependencies)
+            score = analysis.engineering_score
+
+            if dependency_count >= 10 or score <= 3:
+                risk = "HIGH"
+            elif dependency_count >= 5 or score <= 6:
+                risk = "MEDIUM"
+            else:
+                risk = "LOW"
+
             graph.add_module(
                 module=module,
-                dependencies=list(
-                    self.dependency_graph.dependencies_of(module)
-                ),
-                impact_score=analysis.engineering_score,
-                risk=analysis.estimated_risk,
+                dependencies=dependencies,
+                impact_score=score,
+                risk=risk,
             )
 
         return graph
