@@ -49,45 +49,31 @@ class RiskEngine:
             raise ValueError(f"Unknown module: {module_name}")
 
         dependency_count = len(node.dependencies)
-        score = node.impact_score
 
         reasons: List[str] = []
 
         # --------------------------------------------------
         # Risk Rules
+        #
+        # Risk is intentionally based on engineering
+        # dependency surface, not legacy impact_score.
         # --------------------------------------------------
 
         if dependency_count >= 10:
             reasons.append("Large dependency surface")
+            risk = "HIGH"
 
         elif dependency_count >= 5:
             reasons.append("Moderate dependency surface")
-
-        if score <= 3:
-            reasons.append("Low engineering score")
-
-        elif score <= 6:
-            reasons.append("Medium engineering score")
-
-        # --------------------------------------------------
-        # Overall Risk
-        # --------------------------------------------------
-
-        if dependency_count >= 10 or score <= 3:
-            risk = "HIGH"
-
-        elif dependency_count >= 5 or score <= 6:
             risk = "MEDIUM"
 
         else:
+            reasons.append("Healthy dependency surface")
             risk = "LOW"
-
-        if not reasons:
-            reasons.append("Healthy engineering profile")
 
         return RiskAssessment(
             module=module_name,
-            engineering_score=score,
+            engineering_score=0.0,
             dependency_count=dependency_count,
             risk=risk,
             reasons=reasons,

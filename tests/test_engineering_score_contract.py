@@ -13,7 +13,6 @@ import unittest
 
 from modules.engineering_graph import EngineeringGraph
 from modules.engineering_score import EngineeringScoreEngine
-from modules.impact_engine import ImpactEngine
 from modules.risk_engine import RiskEngine
 
 
@@ -70,7 +69,46 @@ class TestEngineeringScoreContract(unittest.TestCase):
 
         score = self.score_engine.calculate("modules.target")
 
-        self.assertNotEqual(score.score, node.impact_score)
+        self.assertNotEqual(
+            score.score,
+            node.impact_score,
+        )
+
+    def test_authoritative_score_is_independent_of_legacy_impact_score(
+        self,
+    ) -> None:
+        node = self.graph.get_node("modules.target")
+
+        self.assertIsNotNone(node)
+
+        first = self.score_engine.calculate("modules.target")
+
+        node.impact_score = 2.0
+
+        second = self.score_engine.calculate("modules.target")
+
+        self.assertEqual(
+            first.score,
+            second.score,
+        )
+
+    def test_risk_is_independent_of_legacy_impact_score(
+        self,
+    ) -> None:
+        node = self.graph.get_node("modules.target")
+
+        self.assertIsNotNone(node)
+
+        first = self.risk_engine.analyze("modules.target")
+
+        node.impact_score = 1.0
+
+        second = self.risk_engine.analyze("modules.target")
+
+        self.assertEqual(
+            first.risk,
+            second.risk,
+        )
 
 
 if __name__ == "__main__":

@@ -81,9 +81,9 @@ class EngineeringGraphBuilder:
             dependency_count = len(dependencies)
             score = analysis.engineering_score
 
-            if dependency_count >= 10 or score <= 3:
+            if dependency_count >= 10:
                 risk = "HIGH"
-            elif dependency_count >= 5 or score <= 6:
+            elif dependency_count >= 5:
                 risk = "MEDIUM"
             else:
                 risk = "LOW"
