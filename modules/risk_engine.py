@@ -24,7 +24,6 @@ from modules.engineering_graph import EngineeringGraph
 @dataclass
 class RiskAssessment:
     module: str
-    engineering_score: float
     dependency_count: int
     risk: str
     reasons: List[str]
@@ -73,7 +72,6 @@ class RiskEngine:
 
         return RiskAssessment(
             module=module_name,
-            engineering_score=0.0,
             dependency_count=dependency_count,
             risk=risk,
             reasons=reasons,

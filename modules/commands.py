@@ -221,7 +221,6 @@ def handle_command(
             lines = [
                 f"Module: {risk.module}",
                 f"Risk: {risk.risk}",
-                f"Engineering Score: {risk.engineering_score}",
                 f"Dependencies: {risk.dependency_count}",
                 "",
                 "Reasons:",

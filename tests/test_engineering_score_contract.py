@@ -110,6 +110,13 @@ class TestEngineeringScoreContract(unittest.TestCase):
             second.risk,
         )
 
+    def test_risk_assessment_does_not_own_engineering_score(self) -> None:
+        assessment = self.risk_engine.analyze("modules.target")
+
+        self.assertFalse(
+            hasattr(assessment, "engineering_score")
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
