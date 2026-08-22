@@ -67,6 +67,7 @@ def handle_command(
         print("  engineering plan <m>    - View refactor plan for a module")
         print("  engineering predict <m> - View affected dependency modules")
         print("  engineering risk <m>    - Evaluate risk score and reasons for a module")
+        print("  engineering score <m>   - Calculate engineering score for a module")
 
     elif cmd_lower in ["plan", "roadmap"]:
         print(planner.format_plan_dashboard())
@@ -239,14 +240,22 @@ def handle_command(
     elif cmd_lower.startswith("engineering risk "):
         module = user_input[len("engineering risk "):].strip()
         risk = runtime.risk(module)
+        score = runtime.score(module)
 
         print(f"\nModule: {risk.module}")
         print(f"Risk: {risk.risk}")
-        print(f"Engineering Score: {risk.engineering_score}")
+        print(f"Engineering Score: {score.score}")
         print(f"Dependencies: {risk.dependency_count}")
         print("\nReasons:")
         for reason in risk.reasons:
             print(f"  • {reason}")
+
+    elif cmd_lower.startswith("engineering score "):
+        module = user_input[len("engineering score "):].strip()
+        score = runtime.score(module)
+
+        print(f"\nModule: {module}")
+        print(f"Engineering Score: {score.score}")
 
     else:
         print(

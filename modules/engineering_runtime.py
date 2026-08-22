@@ -211,6 +211,10 @@ class EngineeringRuntime:
     def risk(self, module: str) -> RiskAssessment:
         return self.risk_engine.analyze(module)
 
+    def score(self, module: str):
+        """Return the authoritative engineering score for a module."""
+        return self.score_engine.calculate(module)
+
     def overview(self) -> str:
         """Generate a project-wide engineering overview."""
         return self.overview_engine.generate()
