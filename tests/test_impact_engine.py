@@ -36,17 +36,19 @@ class TestImpactEngine(unittest.TestCase):
 
         self.assertEqual(
             sorted(result.affected_modules),
-            ["main", "planner", "router"]
+            ["main", "planner", "router"],
         )
 
         self.assertEqual(result.complexity_score, 3.0)
 
-    def test_engineering_score(self):
+    def test_impact_analysis_does_not_own_engineering_score(self):
         engine = ImpactEngine(self.graph)
 
         result = engine.analyze("modules.memory")
 
-        self.assertEqual(result.engineering_score, 7.0)
+        self.assertFalse(
+            hasattr(result, "engineering_score")
+        )
 
 
 if __name__ == "__main__":

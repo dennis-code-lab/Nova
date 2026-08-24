@@ -1,8 +1,13 @@
 """
-Nova Engine v84
+Nova Engine v109
 Impact Analysis Engine
 
 Calculates engineering impact based on a DependencyGraph.
+
+Important:
+- ImpactEngine owns impact analysis only.
+- It does NOT own the authoritative engineering score.
+- Authoritative engineering scoring belongs to EngineeringScoreEngine.
 """
 
 from __future__ import annotations
@@ -17,13 +22,15 @@ from modules.dependency_analyzer import DependencyGraph
 class ImpactAnalysis:
     affected_modules: List[str]
     complexity_score: float
-    engineering_score: float
     estimated_risk: str
 
 
 class ImpactEngine:
     """
     Computes engineering impact from a DependencyGraph.
+
+    This engine intentionally does not calculate or expose
+    the authoritative engineering score.
     """
 
     def __init__(self, graph: DependencyGraph):
@@ -42,7 +49,6 @@ class ImpactEngine:
                 affected.append(mod)
 
         complexity = float(len(affected))
-        engineering_score = max(0.0, 10.0 - complexity)
 
         if complexity >= 10:
             risk = "HIGH"
@@ -54,6 +60,5 @@ class ImpactEngine:
         return ImpactAnalysis(
             affected_modules=sorted(affected),
             complexity_score=complexity,
-            engineering_score=engineering_score,
             estimated_risk=risk,
         )

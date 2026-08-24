@@ -19,25 +19,23 @@ class TestEngineeringGraph(unittest.TestCase):
 
         self.dep.add_dependency(
             "main",
-            "modules.memory"
+            "modules.memory",
         )
 
         self.dep.add_dependency(
             "router",
-            "modules.memory"
+            "modules.memory",
         )
 
         self.analyses = {
             "main": ImpactAnalysis(
                 affected_modules=["router"],
                 complexity_score=1,
-                engineering_score=9,
                 estimated_risk="LOW",
             ),
             "router": ImpactAnalysis(
                 affected_modules=[],
                 complexity_score=0,
-                engineering_score=10,
                 estimated_risk="LOW",
             ),
         }

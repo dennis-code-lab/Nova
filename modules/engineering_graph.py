@@ -1,9 +1,13 @@
 """
-Nova Engine v84
+Nova Engine v109
 Engineering Graph
 
 Builds a graph representation combining dependency
 relationships and engineering impact.
+
+Note:
+GraphNode.impact_score is retained as legacy graph metadata.
+It is NOT the authoritative engineering score.
 """
 
 from __future__ import annotations
@@ -58,14 +62,19 @@ class EngineeringGraph:
 
 class EngineeringGraphBuilder:
     """
-    Converts DependencyGraph +
-    ImpactAnalysis into EngineeringGraph.
+    Converts DependencyGraph + ImpactAnalysis into EngineeringGraph.
+
+    The legacy GraphNode.impact_score is derived from impact complexity
+    for compatibility. It is not the authoritative engineering score.
     """
 
     def __init__(self, dependency_graph: DependencyGraph):
         self.dependency_graph = dependency_graph
 
-    def build(self, analyses: Dict[str, ImpactAnalysis]) -> EngineeringGraph:
+    def build(
+        self,
+        analyses: Dict[str, ImpactAnalysis],
+    ) -> EngineeringGraph:
         graph = EngineeringGraph()
 
         for module in self.dependency_graph.modules():
@@ -79,7 +88,14 @@ class EngineeringGraphBuilder:
             )
 
             dependency_count = len(dependencies)
-            score = analysis.engineering_score
+
+            # Legacy graph metadata only.
+            # The authoritative engineering score belongs to
+            # EngineeringScoreEngine.
+            legacy_impact_score = max(
+                0.0,
+                10.0 - analysis.complexity_score,
+            )
 
             if dependency_count >= 10:
                 risk = "HIGH"
@@ -91,7 +107,7 @@ class EngineeringGraphBuilder:
             graph.add_module(
                 module=module,
                 dependencies=dependencies,
-                impact_score=score,
+                impact_score=legacy_impact_score,
                 risk=risk,
             )
 
