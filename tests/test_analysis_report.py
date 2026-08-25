@@ -25,7 +25,6 @@ class TestAnalysisReport(unittest.TestCase):
             module="main",
             dependencies=["modules.memory"],
             impact_score=9.0,
-            risk="LOW",
         )
 
         self.graph = graph

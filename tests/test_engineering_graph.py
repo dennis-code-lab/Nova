@@ -56,8 +56,8 @@ class TestEngineeringGraph(unittest.TestCase):
         node = graph.get_node("main")
 
         self.assertIsNotNone(node)
-        self.assertEqual(node.risk, "LOW")
         self.assertEqual(node.impact_score, 9)
+        self.assertFalse(hasattr(node, "risk"))
 
 
 if __name__ == "__main__":

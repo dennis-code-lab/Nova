@@ -32,21 +32,18 @@ class TestRefactorPlanner(unittest.TestCase):
                 "re",
             ],
             impact_score=4.0,
-            risk="LOW",
         )
 
         graph.add_module(
             module="modules.dialogue",
             dependencies=["modules.ai"],
             impact_score=8.0,
-            risk="LOW",
         )
 
         graph.add_module(
             module="nova_gui",
             dependencies=["modules.ai"],
             impact_score=9.0,
-            risk="LOW",
         )
 
         predictor = ChangePredictor(graph)

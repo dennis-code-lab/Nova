@@ -30,14 +30,12 @@ class TestRiskEngine(unittest.TestCase):
                 "math",
             ],
             impact_score=4.5,
-            risk="LOW",
         )
 
         graph.add_module(
             module="modules.logger",
             dependencies=["datetime"],
             impact_score=9.0,
-            risk="LOW",
         )
 
         self.engine = RiskEngine(graph)

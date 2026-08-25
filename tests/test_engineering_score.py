@@ -23,7 +23,6 @@ class TestEngineeringScore(unittest.TestCase):
             module="modules.simple",
             dependencies=["json"],
             impact_score=9.0,
-            risk="LOW",
         )
 
         graph.add_module(
@@ -36,7 +35,6 @@ class TestEngineeringScore(unittest.TestCase):
                 "dataclasses",
             ],
             impact_score=6.0,
-            risk="MEDIUM",
         )
 
         graph.add_module(
@@ -54,7 +52,6 @@ class TestEngineeringScore(unittest.TestCase):
                 "logging",
             ],
             impact_score=4.0,
-            risk="HIGH",
         )
 
         risk_engine = RiskEngine(graph)

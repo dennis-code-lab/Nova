@@ -28,7 +28,6 @@ class TestEngineeringScoreContract(unittest.TestCase):
                 "os",
             ],
             impact_score=8.0,
-            risk="LOW",
         )
 
         self.graph = graph

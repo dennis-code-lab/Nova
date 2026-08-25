@@ -24,7 +24,6 @@ class GraphNode:
     name: str
     dependencies: List[str] = field(default_factory=list)
     impact_score: float = 0.0
-    risk: str = "LOW"
 
 
 class EngineeringGraph:
@@ -41,13 +40,11 @@ class EngineeringGraph:
         module: str,
         dependencies: List[str],
         impact_score: float,
-        risk: str,
     ) -> None:
         self.nodes[module] = GraphNode(
             name=module,
             dependencies=sorted(dependencies),
             impact_score=impact_score,
-            risk=risk,
         )
 
     def get_node(self, module: str) -> Optional[GraphNode]:
@@ -87,8 +84,6 @@ class EngineeringGraphBuilder:
                 self.dependency_graph.dependencies_of(module)
             )
 
-            dependency_count = len(dependencies)
-
             # Legacy graph metadata only.
             # The authoritative engineering score belongs to
             # EngineeringScoreEngine.
@@ -97,18 +92,10 @@ class EngineeringGraphBuilder:
                 10.0 - analysis.complexity_score,
             )
 
-            if dependency_count >= 10:
-                risk = "HIGH"
-            elif dependency_count >= 5:
-                risk = "MEDIUM"
-            else:
-                risk = "LOW"
-
             graph.add_module(
                 module=module,
                 dependencies=dependencies,
                 impact_score=legacy_impact_score,
-                risk=risk,
             )
 
         return graph
