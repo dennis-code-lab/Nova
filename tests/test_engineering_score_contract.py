@@ -3,8 +3,7 @@ Nova Engine v104
 Engineering Score Contract Tests
 
 Verifies that the authoritative engineering score is exposed
-through EngineeringScoreEngine and remains independent from
-the legacy ImpactEngine score.
+through EngineeringScoreEngine.
 """
 
 from __future__ import annotations
@@ -27,7 +26,6 @@ class TestEngineeringScoreContract(unittest.TestCase):
                 "json",
                 "os",
             ],
-            impact_score=8.0,
         )
 
         self.graph = graph
@@ -58,55 +56,6 @@ class TestEngineeringScoreContract(unittest.TestCase):
         self.assertEqual(
             result.dependency_count,
             2,
-        )
-
-    def test_legacy_impact_score_remains_separate(self) -> None:
-        node = self.graph.get_node("modules.target")
-
-        self.assertIsNotNone(node)
-        self.assertEqual(node.impact_score, 8.0)
-
-        score = self.score_engine.calculate("modules.target")
-
-        self.assertNotEqual(
-            score.score,
-            node.impact_score,
-        )
-
-    def test_authoritative_score_is_independent_of_legacy_impact_score(
-        self,
-    ) -> None:
-        node = self.graph.get_node("modules.target")
-
-        self.assertIsNotNone(node)
-
-        first = self.score_engine.calculate("modules.target")
-
-        node.impact_score = 2.0
-
-        second = self.score_engine.calculate("modules.target")
-
-        self.assertEqual(
-            first.score,
-            second.score,
-        )
-
-    def test_risk_is_independent_of_legacy_impact_score(
-        self,
-    ) -> None:
-        node = self.graph.get_node("modules.target")
-
-        self.assertIsNotNone(node)
-
-        first = self.risk_engine.analyze("modules.target")
-
-        node.impact_score = 1.0
-
-        second = self.risk_engine.analyze("modules.target")
-
-        self.assertEqual(
-            first.risk,
-            second.risk,
         )
 
     def test_risk_assessment_does_not_own_engineering_score(self) -> None:

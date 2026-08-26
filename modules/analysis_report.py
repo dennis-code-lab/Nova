@@ -5,8 +5,7 @@ Analysis Report Generator
 Generates human-readable engineering reports from
 the authoritative EngineeringScoreEngine.
 
-Legacy impact_score remains graph metadata and is not
-used as the displayed engineering health score.
+Engineering health is calculated by EngineeringScoreEngine.
 """
 
 from __future__ import annotations

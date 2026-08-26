@@ -22,7 +22,6 @@ class TestEngineeringScore(unittest.TestCase):
         graph.add_module(
             module="modules.simple",
             dependencies=["json"],
-            impact_score=9.0,
         )
 
         graph.add_module(
@@ -34,7 +33,6 @@ class TestEngineeringScore(unittest.TestCase):
                 "pathlib",
                 "dataclasses",
             ],
-            impact_score=6.0,
         )
 
         graph.add_module(
@@ -51,7 +49,6 @@ class TestEngineeringScore(unittest.TestCase):
                 "sys",
                 "logging",
             ],
-            impact_score=4.0,
         )
 
         risk_engine = RiskEngine(graph)

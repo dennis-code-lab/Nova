@@ -4,10 +4,6 @@ Engineering Graph
 
 Builds a graph representation combining dependency
 relationships and engineering impact.
-
-Note:
-GraphNode.impact_score is retained as legacy graph metadata.
-It is NOT the authoritative engineering score.
 """
 
 from __future__ import annotations
@@ -23,7 +19,6 @@ from modules.impact_engine import ImpactAnalysis
 class GraphNode:
     name: str
     dependencies: List[str] = field(default_factory=list)
-    impact_score: float = 0.0
 
 
 class EngineeringGraph:
@@ -39,12 +34,10 @@ class EngineeringGraph:
         self,
         module: str,
         dependencies: List[str],
-        impact_score: float,
     ) -> None:
         self.nodes[module] = GraphNode(
             name=module,
             dependencies=sorted(dependencies),
-            impact_score=impact_score,
         )
 
     def get_node(self, module: str) -> Optional[GraphNode]:
@@ -60,9 +53,6 @@ class EngineeringGraph:
 class EngineeringGraphBuilder:
     """
     Converts DependencyGraph + ImpactAnalysis into EngineeringGraph.
-
-    The legacy GraphNode.impact_score is derived from impact complexity
-    for compatibility. It is not the authoritative engineering score.
     """
 
     def __init__(self, dependency_graph: DependencyGraph):
@@ -84,18 +74,9 @@ class EngineeringGraphBuilder:
                 self.dependency_graph.dependencies_of(module)
             )
 
-            # Legacy graph metadata only.
-            # The authoritative engineering score belongs to
-            # EngineeringScoreEngine.
-            legacy_impact_score = max(
-                0.0,
-                10.0 - analysis.complexity_score,
-            )
-
             graph.add_module(
                 module=module,
                 dependencies=dependencies,
-                impact_score=legacy_impact_score,
             )
 
         return graph

@@ -3,7 +3,7 @@ Nova Engine v106
 Analysis Report Generator - Test Suite
 
 Verifies that AnalysisReport exposes the authoritative
-EngineeringScoreEngine score rather than legacy impact_score.
+EngineeringScoreEngine score.
 """
 
 from __future__ import annotations
@@ -24,7 +24,6 @@ class TestAnalysisReport(unittest.TestCase):
         graph.add_module(
             module="main",
             dependencies=["modules.memory"],
-            impact_score=9.0,
         )
 
         self.graph = graph
@@ -62,32 +61,6 @@ class TestAnalysisReport(unittest.TestCase):
 
         self.assertIn(
             f"Engineering Score: {expected.score}",
-            report,
-        )
-
-    def test_report_does_not_use_legacy_impact_score_as_engineering_score(
-        self,
-    ) -> None:
-        report = AnalysisReport(self.graph).generate()
-
-        risk_engine = RiskEngine(self.graph)
-        score_engine = EngineeringScoreEngine(
-            self.graph,
-            risk_engine,
-        )
-
-        authoritative_score = score_engine.calculate("main").score
-        node = self.graph.get_node("main")
-        self.assertIsNotNone(node)
-        legacy_score = node.impact_score
-
-        self.assertNotEqual(
-            authoritative_score,
-            legacy_score,
-        )
-
-        self.assertNotIn(
-            f"Engineering Score: {legacy_score}",
             report,
         )
 

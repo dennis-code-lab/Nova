@@ -2,8 +2,7 @@
 Nova Engine v84
 Unit Tests - Risk Engine
 
-Verifies risk assessment calculation across different dependency surfaces
-and engineering impact scores.
+Verifies risk assessment calculation across different dependency surfaces.
 """
 
 from __future__ import annotations
@@ -29,13 +28,11 @@ class TestRiskEngine(unittest.TestCase):
                 "re",
                 "math",
             ],
-            impact_score=4.5,
         )
 
         graph.add_module(
             module="modules.logger",
             dependencies=["datetime"],
-            impact_score=9.0,
         )
 
         self.engine = RiskEngine(graph)

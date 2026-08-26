@@ -55,7 +55,7 @@ class RiskEngine:
         # Risk Rules
         #
         # Risk is intentionally based on engineering
-        # dependency surface, not legacy impact_score.
+        # dependency surface.
         # --------------------------------------------------
 
         if dependency_count >= 10:

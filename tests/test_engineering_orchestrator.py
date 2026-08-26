@@ -32,19 +32,16 @@ class TestEngineeringOrchestrator(unittest.TestCase):
                 "math",
                 "re",
             ],
-            impact_score=4.0,
         )
 
         graph.add_module(
             module="modules.dialogue",
             dependencies=["modules.ai"],
-            impact_score=8.0,
         )
 
         graph.add_module(
             module="nova_gui",
             dependencies=["modules.ai"],
-            impact_score=9.0,
         )
 
         predictor = ChangePredictor(graph)
