@@ -31,12 +31,10 @@ class TestEngineeringGraph(unittest.TestCase):
             "main": ImpactAnalysis(
                 affected_modules=["router"],
                 complexity_score=1,
-                estimated_risk="LOW",
             ),
             "router": ImpactAnalysis(
                 affected_modules=[],
                 complexity_score=0,
-                estimated_risk="LOW",
             ),
         }
 

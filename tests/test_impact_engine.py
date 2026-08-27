@@ -26,7 +26,6 @@ class TestImpactEngine(unittest.TestCase):
 
         result = engine.analyze("modules.router")
 
-        self.assertEqual(result.estimated_risk, "LOW")
         self.assertEqual(result.complexity_score, 1.0)
 
     def test_affected_modules(self):

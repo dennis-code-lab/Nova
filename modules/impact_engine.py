@@ -22,7 +22,6 @@ from modules.dependency_analyzer import DependencyGraph
 class ImpactAnalysis:
     affected_modules: List[str]
     complexity_score: float
-    estimated_risk: str
 
 
 class ImpactEngine:
@@ -50,15 +49,7 @@ class ImpactEngine:
 
         complexity = float(len(affected))
 
-        if complexity >= 10:
-            risk = "HIGH"
-        elif complexity >= 5:
-            risk = "MEDIUM"
-        else:
-            risk = "LOW"
-
         return ImpactAnalysis(
             affected_modules=sorted(affected),
             complexity_score=complexity,
-            estimated_risk=risk,
         )
