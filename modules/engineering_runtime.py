@@ -119,7 +119,7 @@ class EngineeringRuntime:
 
         self.health_engine = EngineeringHealth(
             engineering_graph,
-            self.risk_engine,
+            self.score_engine,
         )
 
         self.forecast_engine = EngineeringForecastEngine(
@@ -155,7 +155,7 @@ class EngineeringRuntime:
 
         self.overview_engine = EngineeringOverview(
             engineering_graph,
-            self.risk_engine,
+            self.score_engine,
         )
 
         self.milestone_engine = EngineeringMilestoneEngine(

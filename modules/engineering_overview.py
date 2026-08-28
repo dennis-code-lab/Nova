@@ -1,5 +1,5 @@
 """
-Nova Engine v85
+Nova Engine v114
 Engineering Overview Generator
 
 Produces a project-wide engineering summary.
@@ -13,7 +13,7 @@ from __future__ import annotations
 from modules.engineering_graph import EngineeringGraph
 from modules.engineering_health import EngineeringHealth
 from modules.engineering_recommendation import EngineeringRecommendation
-from modules.risk_engine import RiskEngine
+from modules.engineering_score import EngineeringScoreEngine
 
 
 class EngineeringOverview:
@@ -21,24 +21,24 @@ class EngineeringOverview:
     def __init__(
         self,
         graph: EngineeringGraph,
-        risk_engine: RiskEngine,
+        score_engine: EngineeringScoreEngine,
     ) -> None:
-
         self.graph = graph
-        self.risk_engine = risk_engine
+        self.score_engine = score_engine
+
         self.health = EngineeringHealth(
             graph,
-            risk_engine,
+            score_engine,
         )
+
         self.recommendation = EngineeringRecommendation(
             graph,
-            risk_engine,
+            score_engine,
         )
 
     # ------------------------------------------------------
 
     def generate(self) -> str:
-
         report = self.health.analyze()
 
         lines = [
@@ -46,7 +46,7 @@ class EngineeringOverview:
             "NOVA ENGINEERING OVERVIEW",
             "=" * 60,
             "",
-            f"Modules Analysed : {report.total_modules}",
+            f"Modules Analysed   : {report.total_modules}",
             f"Engineering Health : {report.engineering_health:.1f}%",
             "",
             "Risk Summary",

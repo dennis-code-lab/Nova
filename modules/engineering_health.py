@@ -1,8 +1,9 @@
 """
-Nova Engine v86
+Nova Engine v114
 Engineering Health Analyzer
 
-Calculates project-wide engineering health metrics based on average engineering scores.
+Calculates project-wide engineering health metrics from the
+authoritative EngineeringScoreEngine.
 
 Author:
     Nova Engine
@@ -13,7 +14,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from modules.engineering_graph import EngineeringGraph
-from modules.risk_engine import RiskEngine
 from modules.engineering_score import EngineeringScoreEngine
 
 
@@ -39,35 +39,29 @@ class EngineeringHealth:
     def __init__(
         self,
         graph: EngineeringGraph,
-        risk_engine: RiskEngine,
+        score_engine: EngineeringScoreEngine,
     ) -> None:
-
         self.graph = graph
-        self.risk_engine = risk_engine
-
-        self.score_engine = EngineeringScoreEngine(
-            graph,
-            risk_engine,
-        )
+        self.score_engine = score_engine
 
     # ------------------------------------------------------
 
     def analyze(self) -> HealthReport:
-
         low = 0
         medium = 0
         high = 0
 
-        for module in self.graph.modules():
+        total_score = 0.0
+        modules = self.graph.modules()
 
-            result = self.risk_engine.analyze(module)
+        for module in modules:
+            score = self.score_engine.calculate(module)
+            total_score += score.score
 
-            if result.risk == "LOW":
+            if score.risk == "LOW":
                 low += 1
-
-            elif result.risk == "MEDIUM":
+            elif score.risk == "MEDIUM":
                 medium += 1
-
             else:
                 high += 1
 
@@ -76,16 +70,9 @@ class EngineeringHealth:
         # ---------------------------------------------
         # Engineering Score Average
         # ---------------------------------------------
-        total_score = 0.0
-        for module in self.graph.modules():
-            score = self.score_engine.calculate(module)
-            total_score += score.score
 
-        if self.graph.modules():
-            average_score = (
-                total_score /
-                len(self.graph.modules())
-            )
+        if modules:
+            average_score = total_score / len(modules)
         else:
             average_score = 10.0
 

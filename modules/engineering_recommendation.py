@@ -1,8 +1,9 @@
 """
-Nova Engine v85
+Nova Engine v114
 Engineering Recommendation Engine
 
-Ranks modules that should be refactored first.
+Ranks modules that should be refactored first based on dependency
+complexity and engineering health scores.
 
 Author:
     Nova Engine
@@ -14,7 +15,6 @@ from dataclasses import dataclass
 from typing import List
 
 from modules.engineering_graph import EngineeringGraph
-from modules.risk_engine import RiskEngine
 from modules.engineering_score import EngineeringScoreEngine
 
 
@@ -39,15 +39,10 @@ class EngineeringRecommendation:
     def __init__(
         self,
         graph: EngineeringGraph,
-        risk_engine: RiskEngine,
+        score_engine: EngineeringScoreEngine,
     ) -> None:
-
         self.graph = graph
-        self.risk_engine = risk_engine
-        self.score_engine = EngineeringScoreEngine(
-            graph,
-            risk_engine,
-        )
+        self.score_engine = score_engine
 
     # ------------------------------------------------------
 
@@ -55,11 +50,9 @@ class EngineeringRecommendation:
         self,
         limit: int = 5,
     ) -> List[Recommendation]:
-
         recommendations: List[Recommendation] = []
 
         for module in self.graph.modules():
-
             node = self.graph.get_node(module)
 
             if node is None:
