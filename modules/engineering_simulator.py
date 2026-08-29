@@ -14,7 +14,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from modules.change_predictor import ChangePredictor
-from modules.engineering_forecast import EngineeringForecastEngine
+from modules.engineering_graph import EngineeringGraph
 from modules.engineering_score import EngineeringScoreEngine
 from modules.risk_engine import RiskEngine
 
@@ -52,14 +52,14 @@ class EngineeringSimulator:
 
     def __init__(
         self,
+        graph: EngineeringGraph,
         score_engine: EngineeringScoreEngine,
         risk_engine: RiskEngine,
-        forecast_engine: EngineeringForecastEngine,
         predictor: ChangePredictor | None = None,
     ) -> None:
+        self.graph = graph
         self.score_engine = score_engine
         self.risk_engine = risk_engine
-        self.forecast_engine = forecast_engine
         self.predictor = predictor
 
     # ------------------------------------------------------
@@ -147,13 +147,27 @@ class EngineeringSimulator:
         confidence = min(95, confidence)
 
         # --------------------------------------------------
-        # Project health forecast
+        # Project health simulation
         # --------------------------------------------------
 
-        forecast = self.forecast_engine.generate(1)
+        total_score = 0.0
+        module_count = self.graph.total_modules()
 
-        if forecast:
-            predicted_health = forecast[0].predicted_health
+        for graph_module in self.graph.modules():
+            module_score = self.score_engine.calculate(
+                graph_module
+            )
+
+            if graph_module == module:
+                total_score += predicted_score
+            else:
+                total_score += module_score.score
+
+        if module_count:
+            predicted_health = round(
+                total_score / module_count * 10,
+                1,
+            )
         else:
             predicted_health = 100.0
 

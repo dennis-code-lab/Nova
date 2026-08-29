@@ -14,7 +14,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from modules.engineering_advisor import EngineeringAdvisor
-from modules.engineering_forecast import EngineeringForecastEngine
 from modules.engineering_history import EngineeringHistory
 from modules.engineering_planner_v2 import AutonomousEngineeringPlanner
 from modules.engineering_simulator import EngineeringSimulator
@@ -48,14 +47,12 @@ class EngineeringDecisionEngine:
         planner: AutonomousEngineeringPlanner,
         advisor: EngineeringAdvisor,
         simulator: EngineeringSimulator,
-        forecast: EngineeringForecastEngine,
         history: EngineeringHistory,
     ) -> None:
 
         self.planner = planner
         self.advisor = advisor
         self.simulator = simulator
-        self.forecast = forecast
         self.history = history
 
     # ------------------------------------------------------

@@ -128,9 +128,9 @@ class EngineeringRuntime:
         )
 
         self.simulator = EngineeringSimulator(
+            engineering_graph,
             self.score_engine,
             self.risk_engine,
-            self.forecast_engine,
             self.predictor,
         )
 
@@ -138,7 +138,6 @@ class EngineeringRuntime:
             self.autonomous_planner,
             self.advisor,
             self.simulator,
-            self.forecast_engine,
             self.history,
         )
 
