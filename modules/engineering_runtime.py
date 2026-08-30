@@ -122,16 +122,17 @@ class EngineeringRuntime:
             self.score_engine,
         )
 
-        self.forecast_engine = EngineeringForecastEngine(
-            self.autonomous_planner,
-            self.health_engine,
-        )
-
         self.simulator = EngineeringSimulator(
             engineering_graph,
             self.score_engine,
             self.risk_engine,
             self.predictor,
+        )
+
+        self.forecast_engine = EngineeringForecastEngine(
+            self.autonomous_planner,
+            self.health_engine,
+            self.simulator,
         )
 
         self.decision_engine = EngineeringDecisionEngine(
