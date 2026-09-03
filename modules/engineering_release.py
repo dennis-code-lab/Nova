@@ -70,7 +70,7 @@ class EngineeringReleaseManager:
         achievement_text = (
             "\n".join(
                 f"🏆 {a['name']}"
-                for m in report["achievements"]
+                for a in report["achievements"]
             )
             or "None"
         )
